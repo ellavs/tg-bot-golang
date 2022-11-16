@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package report;
+option go_package = "github.com/ellavs/tg-bot-golang/internal/api";
+
+service UserReportsReciver {
+  rpc PutReport(ReportRequest) returns (ReportResponse);
+}
+
+message ReportItem {
+  string category = 1;  // Категория.
+  float sum = 2;        // Сумма расходов по категории.
+}
+
+message ReportRequest {
+  repeated ReportItem items = 1;  // Список строк отчета.
+  int64 UserID = 2;
+  string ReportKey = 3;
+}
+
+message ReportResponse {
+  bool valid = 1;
+}

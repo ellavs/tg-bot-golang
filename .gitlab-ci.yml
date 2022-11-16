@@ -1,0 +1,21 @@
+default:
+  image: golang:latest
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  script:
+    - make build
+
+test:
+  stage: test
+  script:
+    - make test
+
+lint:
+  stage: test
+  script:
+    - make lint

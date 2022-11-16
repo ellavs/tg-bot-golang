@@ -1,0 +1,64 @@
+services:
+  postgres:
+    container_name: postgres_tgbot
+    image: postgres:alpine3.16
+    restart: always
+    environment:
+      POSTGRES_DB: tgbot
+      POSTGRES_USER: tgbotadmin
+      POSTGRES_PASSWORD: tgbotadminpass
+      PG_TRUST_LOCALNET: true
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts.yml:/etc/prometheus/alerts.yml
+    extra_hosts:
+      - host.docker.internal:host-gateway
+  grafana:
+      image: grafana/grafana-oss
+      ports:
+        - 3000:3000
+      volumes:
+        - ./data:/var/lib/grafana
+      links:
+        - prometheus
+  jaeger:
+    image: jaegertracing/all-in-one:1.18
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686 # web
+      - 14268:14268
+      - 9411:9411
+  kafka:
+    image: wurstmeister/kafka
+    hostname: kafka
+    ports:
+      - "9092:9092"
+    links:
+      - zookeeper
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: "127.0.0.1"
+      KAFKA_ADVERTISED_PORT: "9092"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_CREATE_TOPICS: "tgbot:2:1"
+    depends_on:
+      - zookeeper
+    container_name: tgbot-kafka
+  zookeeper:
+      image: wurstmeister/zookeeper
+      ports:
+        - "2181:2181"
+      container_name: tgbot-zookeeper
+
+volumes:
+  postgres_data:

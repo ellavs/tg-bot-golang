@@ -1,0 +1,22 @@
+# Файл config.yaml необходимо поместить в директорию data.
+# Токен бота в телеграме.
+token: XXX:XXXX
+# Основная валюта, в которой хранятся данные.
+mainCurrency: RUB
+# Список используемых валют.
+CurrenciesName:
+  - USD
+  - CNY
+  - EUR
+  - RUB
+# Периодичность обновления курсов валют из внешнего источника (в минутах).
+CurrenciesUpdatePeriod: 30
+# Периодичность кэширования курсов валют из базы данных (в минутах).
+CurrenciesUpdateCachePeriod: 30
+# Строка подключения к базе данных.
+ConnectionStringDB: host=localhost port=5432 dbname=tgbot user=tgbotadmin password=tgbotadminpass sslmode=disable
+# Наименование топика Kafka.
+KafkaTopic: tgbot
+# Список адресов брокеров сообщений (адрес Kafka).
+BrokersList:
+  - localhost:9092
